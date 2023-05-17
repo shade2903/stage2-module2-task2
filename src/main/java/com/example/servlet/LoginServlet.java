@@ -28,21 +28,13 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        if(password.trim().equals("")){
-            RequestDispatcher rq = req.getRequestDispatcher(LOGIN_JSP);
-            rq.forward(req, resp);
-        }
-        List<String> users = Users.getInstance().getUsers();
-        for (String e : users) {
-            if (e.equals(login)) {
-                req.getSession().setAttribute("user", login);
-            }
-            if (req.getSession().getAttribute("user") != null) {
-                RequestDispatcher rq = req.getRequestDispatcher(HELLO_JSP);
-                rq.forward(req, resp);
-            }
-        }
-        resp.sendRedirect(LOGIN_JSP);
-
+        Users users = Users.getInstance();
+         if(users.getUsers().contains(login) && password != null
+                 && !password.trim().isEmpty()){
+             req.getSession().setAttribute("user",login);
+             resp.sendRedirect(HELLO_JSP);
+         }else{
+             req.getRequestDispatcher(LOGIN_JSP).forward(req,resp);
+         }
     }
 }
